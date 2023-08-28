@@ -2,7 +2,9 @@
 
 int main(int argc, char *argv[])
 {
-    Getchar();
+    //Getchar();
+
+    Gets();
 
     return 0;
 }
