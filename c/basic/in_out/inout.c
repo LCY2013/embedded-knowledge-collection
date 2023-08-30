@@ -15,7 +15,9 @@ int main(int argc, char *argv[])
 
     //ScanfFour();
 
-    ScanfFive();
+    //ScanfFive();
+
+    Putchar();
 
     return 0;
 }

@@ -15,3 +15,5 @@ void ScanfThree();
 void ScanfFour();
 
 void ScanfFive();
+
+void Putchar();

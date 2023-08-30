@@ -85,3 +85,12 @@ void ScanfFive() {
 
     printf("%d\n", '\n');
 }
+
+void Putchar() {
+    int a = 65;
+    char ch = 'B';
+
+    putchar(a);
+    putchar('\n');
+    putchar(ch);
+}
