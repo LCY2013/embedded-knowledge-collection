@@ -9,7 +9,13 @@ int main(int argc, char *argv[])
 
     //ScanfOne();
 
-    ScanfTwo();
+    //ScanfTwo();
+
+    //ScanfThree();
+
+    //ScanfFour();
+
+    ScanfFive();
 
     return 0;
 }

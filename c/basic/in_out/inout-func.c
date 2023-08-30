@@ -47,3 +47,41 @@ void ScanfTwo() {
 
     printf("%d:%d:%d\n", y, m, d);
 }
+
+void ScanfThree() {
+    char y, m, d;
+
+    printf(">");
+    //scanf("%d%d%d", &y, &m, &d);
+    scanf("%c%c%c", &y, &m, &d);
+
+    printf("%d:%d:%d", y, m, d);
+}
+
+void ScanfFour() {
+    int a;
+    char x;
+
+    printf(">");
+    scanf("%d", &a);
+    getchar();
+    scanf("%c", &x);
+
+    printf("%d:%c:%d\n", a, x, x);
+    printf("%d\n", '\n');
+}
+
+void ScanfFive() {
+    int a;
+    char x;
+
+    printf(">");
+    scanf("%d", &a);
+    //getchar();
+    //scanf(" %c", &x);
+    scanf("%*c%c", &x);
+
+    printf("%d:%c:%d\n", a, x, x);
+
+    printf("%d\n", '\n');
+}

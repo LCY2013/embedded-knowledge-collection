@@ -10,3 +10,8 @@ void ScanfOne();
 
 void ScanfTwo();
 
+void ScanfThree();
+
+void ScanfFour();
+
+void ScanfFive();
