@@ -6,3 +6,7 @@ void Getchar();
 
 void Gets();
 
+void ScanfOne();
+
+void ScanfTwo();
+

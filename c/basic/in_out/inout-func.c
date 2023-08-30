@@ -24,3 +24,26 @@ void Gets()
     puts("$$$");
     puts(s);
 }
+
+void ScanfOne() {
+    int ch, n;
+    long m;
+
+    printf(">");
+
+    //scanf("please input:%x", &ch);
+
+    n = scanf("%x%ld", &ch, &m);
+
+    printf("%d %d %ld\n", n, ch, m);
+}
+
+void ScanfTwo() {
+    int y, m, d;
+
+    printf(">");
+    //scanf("%d%d%d", &y, &m, &d);
+    scanf("%4d%2d%2d", &y, &m, &d);
+
+    printf("%d:%d:%d\n", y, m, d);
+}

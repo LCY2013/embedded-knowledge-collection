@@ -2,9 +2,14 @@
 
 int main(int argc, char *argv[])
 {
+    // INPUT
     //Getchar();
 
-    Gets();
+    // Gets();
+
+    //ScanfOne();
+
+    ScanfTwo();
 
     return 0;
 }
