@@ -17,7 +17,15 @@ int main(int argc, char *argv[])
 
     //ScanfFive();
 
-    Putchar();
+    //Putchar();
+
+    //PrintOne();
+
+    //PrintTwo();
+
+    //PrintThree();
+
+    PrintFour();
 
     return 0;
 }

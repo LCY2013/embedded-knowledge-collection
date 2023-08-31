@@ -17,3 +17,11 @@ void ScanfFour();
 void ScanfFive();
 
 void Putchar();
+
+void PrintOne();
+
+void PrintTwo();
+
+void PrintThree();
+
+void PrintFour();
