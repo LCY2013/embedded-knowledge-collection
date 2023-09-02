@@ -9,7 +9,18 @@ int main(int argc, char *argv[])
 
     //while
     //WhileOne();
-    WhileTwo();
+    //WhileTwo();
+    //DoWhile();
 
+    //continue
+    //ContinueOne();
+    //ContinueTwo();
+    //ContinueThree();
+
+    //break
+    //BreakOne();
+    //BreakTwo();
+
+    Multiplication();
     return 0;
 }
