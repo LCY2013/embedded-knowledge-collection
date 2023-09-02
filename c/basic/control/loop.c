@@ -21,6 +21,10 @@ int main(int argc, char *argv[])
     //BreakOne();
     //BreakTwo();
 
-    Multiplication();
+    //Multiplication();
+
+    Switch();
+    ScoreSwitch();
+
     return 0;
 }

@@ -24,3 +24,7 @@ void BreakOne();
 void BreakTwo();
 
 void Multiplication();
+
+void Switch();
+
+void ScoreSwitch();

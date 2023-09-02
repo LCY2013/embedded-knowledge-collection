@@ -208,3 +208,54 @@ void Multiplication() {
         puts("");
     }
 }
+
+void Switch() {
+    enum weekday
+    {sun,mon,tue, wed} a;
+
+    //int tmp = 1;
+//        switch (tmp) {
+//
+    a = wed;
+    switch (a) {
+        //case 0:
+        case sun:
+            printf("0\n");
+        case 1:
+            printf("1\n");
+        case 2:
+            printf("2\n");
+        case 3:
+            printf("3\n");
+            break;
+        default:
+            printf("not 1 2 3\n");
+    }
+}
+
+void ScoreSwitch() {
+    float score = 0;
+
+    printf("please input score:");
+    scanf("%f", &score);
+
+    if ( !(score >= 0 && score <= 100) )
+        printf("not in [0,100]\n");
+    else {
+        switch ((int)score / 10) {
+            case 10:
+            case 9:
+                printf("A-excellent\n");
+                break;
+            case 8:
+            case 7:
+                printf("B-good\n");
+                break;
+            case 6:
+                printf("C-OK\n");
+                break;
+            default:
+                printf("D-not pass\n");
+        }
+    }
+}
