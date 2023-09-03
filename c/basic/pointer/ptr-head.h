@@ -38,3 +38,29 @@ void CharPointerFour();
 
 void CharPointerFive();
 
+void PPointerOne();
+
+void PPointerTwo();
+
+void PPointerThree();
+
+void PointerArrOne();
+
+void PointerArrTwo();
+
+void PointerArrThree();
+
+void PointerArrFour();
+
+void ConstOne();
+
+void ConstTwo();
+
+void VoidPointerOne();
+
+void VoidPointerTwo();
+
+void VoidPointerThree();
+
+void Main(int argc, char *argv[]);
+

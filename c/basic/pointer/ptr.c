@@ -19,7 +19,25 @@ int main(int argc, char *argv[]) {
     //CharPointerTwo();
     //CharPointerThree();
     //CharPointerFour();
-    CharPointerFive();
+    //CharPointerFive();
+
+    //PPointerOne();
+    //PPointerTwo();
+    //PPointerThree();
+
+    //PointerArrOne();
+    //PointerArrTwo();
+    //PointerArrThree();
+    //PointerArrFour();
+
+    //ConstOne();
+    //ConstTwo();
+
+    //VoidPointerOne();
+    //VoidPointerTwo();
+    //VoidPointerThree();
+
+    Main(argc, argv);
 
     return 0;
 }
