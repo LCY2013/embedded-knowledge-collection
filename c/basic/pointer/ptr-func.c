@@ -196,3 +196,77 @@ void Pointer13() {
         puts("");
     }
 }
+
+void CharPointerOne() {
+    char ch = 'A';
+
+    char * p;
+
+    p = &ch;
+
+    printf("%c %c\n", ch, *p);
+}
+
+void CharPointerTwo() {
+    char ch1[] = "hello World!";
+    char ch2[] = "hello World!";
+
+    char * p;
+
+    p = ch1;
+    //ch1[0]---*(ch1+0)----p[0], *p
+    if(isalpha(*p)) {
+        if (isupper(*p))
+            *p = tolower(*p);
+        else
+            *p = toupper(*p);
+    }
+    printf("%p %s\n", p, p);
+
+    p = ch2;
+    printf("%p %s\n",p, p);
+}
+
+void CharPointerThree() {
+    char * p1 = "hello World!";
+    char * p2 = "hello World!";
+
+    *p1 -= 32;
+
+    printf("&p1=%p %p %s\n", &p1, p1, p1);
+
+    printf("&p2=%p %p %s\n", &p2, p2, p2);
+}
+
+void CharPointerFour() {
+    char ch[50] = "welcome";
+    char * p1 = "hello World!";
+
+    strcpy(ch, p1);
+    //strcpy(p1, ch);
+
+    puts(ch);
+    puts(p1);
+}
+
+void CharPointerFive() {
+    char ch[100] = "welcome";
+    char * p = "hello World!", * q;
+    int i = 0;
+
+    q = p;
+
+    while (*(ch+i) != '\0')
+        i++;
+
+    while (*p != '\0') {
+        *(ch+i) = *p;
+        i++;
+        p++;
+    }
+    *(ch+i) = *p;
+
+    p = q;
+    puts(ch);
+    puts(p);
+}

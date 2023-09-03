@@ -1,4 +1,6 @@
 #include <stdio.h>
+#include <ctype.h>
+#include <string.h>
 
 void Pointer01();
 
@@ -26,4 +28,13 @@ void Pointer12();
 
 void Pointer13();
 
+void CharPointerOne();
+
+void CharPointerTwo();
+
+void CharPointerThree();
+
+void CharPointerFour();
+
+void CharPointerFive();
 

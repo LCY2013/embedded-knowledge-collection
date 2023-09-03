@@ -13,7 +13,13 @@ int main(int argc, char *argv[]) {
     //Pointer10();
     //Pointer11();
     //Pointer12();
-    Pointer13();
+    //Pointer13();
+
+    //CharPointerOne();
+    //CharPointerTwo();
+    //CharPointerThree();
+    //CharPointerFour();
+    CharPointerFive();
 
     return 0;
 }
