@@ -1,0 +1,75 @@
+【1】Linux的发展
+    （1）Unix的起源
+     	 1）1969年，由kenthompson在AT&T贝尔实验室实现的。使用的是汇编语言。
+	 2）1970年，KenThompson和DennisRitchie是使用C语言对整个系统进行了再加工和编写，是的Unix能够很容易的移植到其他硬件的计算机上。
+         3）Unix家庭树 
+            1970年---1980---1990---2000--->
+	 4）什么是Linux？
+	    1) GNU&GPL
+		 GNU = GNU is Not Unix
+                 由Richard Stallman在1984创建
+                 最初的软件：gcc、make、glibc
+ 		 GPL = General Public License
+                 http://www.gnu.org/copyleft/copyleft.html
+                 http://www.gnu.org/licenses/gplfaq.html
+            2) Linux是一种操作系统
+               1991年，芬兰赫尔辛基大学的学生Linux Torvals为了能在家里的PC机上使用与学校一样的操作系统，开始编写了类UNIX.
+               1991.8.25,Linux就在comp.os.minix新闻组中首次发布了一个Linux内核的公共版本
+
+【2】各种Linux发行版本
+    （1）更为流行的Linux版本
+         Solaris 、IBM AIX、Red Hat、Fedora Core、SUSE、Debian、Mac OS X、Ubuntu、FreeBSD、OpenBSD、NetBSD、Yellow Dog linux.... 
+     (2) 脱颖而出的Ubuntu
+    （3）Ubuntu 发行版本代号 
+	 
+【3】Linux体系结构
+  （1）Linux操作系统的组件 
+	1）Linux内核
+	2）Shell
+	3) 文件系统
+	4）实用程序
+                                命令、程序或shell脚本
+					↓
+				       shell
+					↓           用户空间
+                             ---------------------------
+					↓           内核空间
+				系统调用（system calls）
+	        文件系统      I/O    内存管理   进程调度   中断异常处理
+		Cache
+（2）Linux内核版本
+	2001年版本是2.4
+	2012年版本是3.3 
+
+【4】命令终端
+    （1）选择命令终端窗口
+     目前，在桌面环境下的命令终端仿真器程序有很多，他们各有特色，都拥有各自的用户群。目前流行的终端窗口有:
+	Xterm、Gnome-terminal、Konsole、Rxvt等
+    （2）Ubuntu Linux默认安装的命令终端有Gnome-terminal、Xterm,其他的命令终端都需要另行安装
+    （3）Gnome-terminal是GNOME默认的命令终端。比Xterm具有更多、更强的功能，提供了剪切、粘贴、多标签显示，以及	 
+	设置终端配置文件等功能，中文支持和用户界面也很友好。用户可以使用窗口菜单，或快捷键完成操作。
+    （4）快捷操作
+           Ctrl+Alt+T   打开一个终端
+           Ctrl+Alt+T   在当前路径下打开一个终端
+           Ctrl+Shift+T 打开一个标签
+    （5）命令行设置
+         Edit  ---> Profiles ---> Edit  
+
+【5】总结与思考
+    （1）本节主要对Linux的发展过程、各种发行版本、体系结构及Linux的命令终端进行了介绍。
+    （2）思考
+                什么是GPL?
+		Linux和Unix有什么关系？
+
+
+
+
+
+
+
+
+
+
+
+
+

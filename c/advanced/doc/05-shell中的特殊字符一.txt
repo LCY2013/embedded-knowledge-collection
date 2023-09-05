@@ -1,0 +1,28 @@
+【1】shell中的通配符
+    （1）通配符
+	 当需要用命令处理一组文件，例如file.txt、file2.txt、file3.txt....,用户不必意义输入文件名，
+	 可以使用shell通配符。shell命令的通配符含义如下表
+		通配符             含义                                  实例
+		*	   匹配任意长度的字符串         用file_*.txt,匹配file_wang.txt、file_lee.txt、file3_liu.txt
+		?          匹配一个长度的字符           用file_?.txt，匹配file_1.txt、file_2.txt、file_3.txt
+               [...]       匹配其中指定的一个字符       用file_[otr].txt,匹配file_o.txt、file_r.txt和file_t.txt
+	       [-]         匹配指定的一个字符范围       用file_[a-z].txt,匹配file_a.txt、file_b.txt,直到file_z.txt
+	       [^...]      除了其中指定的字符均可匹配   用file_[^otr].txt，除了file_o.txt、file_t.txt、file_r.txt的其它文件
+
+
+【2】shell中的管道
+    （1）管道
+	 管道可以把一系列命令链接起来，意味着第一个命令的输出将作为第二个命令的输入，通过管道传递给第二个命令，
+	 第二个命令的输出又将作为第三个命令的输入，以此类推。就像通过使用“|”符连成一个管道。
+		ls /use/bin | wc -w
+
+【3】总结与思考
+     (1)本节课主要介绍了shell中的几种特殊字符的用法以及管道的使用
+    （2）思考
+		1）shell中有哪些特殊字符？         *   ？  [ ]
+		2）shell中管道的作用？             第一个命令的输出作为第二个命令的输入
+		3）shell中grep命令和管道如何结合？
+			cat /etc/passwd | grep “linux”
+			ps -ef 是查看当前运行的进程
+	
+		

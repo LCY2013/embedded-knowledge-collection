@@ -1,0 +1,38 @@
+【1】输入输出重定向
+    （1）输入/输出重定向是改变shell命令或程序默认的标准输入/输出目标，重新定向到新的目标。
+    （2）linux中默认的标准输入定义为键盘，标准输出定义为终端窗口。
+    （3）用户可以为当前操作改变输入或输出，迫使某个特定命令的输入或输出来源为外部文件。 
+		重定向符 		含义						实例
+		> file		将file文件重定向为输出源，新建模式 	ls /usr > Lsoutput.txt，将ls /usr的执行结果，
+									写到Lsoutput.txt文件中，若有同名文件将被删除
+		>> file		将file文件重定向为输出源，追加模式	ls /usr >> Lsoutput.txt，将ls /usr的执行结果，
+									追加到Lsoutput.txt文件已有内容后
+		< file		将file文件重定向为输入源		wc < file1，将file1中的内容作为输入传给wc命令
+		2> 或 &>	将由命令产生的错误信息输入到文件中	ls noexistingfile.txt  2> err.log，使用ls命令，
+    									查看一个不存在的文件时，将系统错误提示保存在err.log文件中
+    （4）cat命令功能为在标准输出上显示文件。下面通过一个实例，可以更好地理解重定向的功能。 
+     	 1）	cat            #使用标准输入/出设备
+		have a good day!                #用户使用标准输入设备——键盘，键入字符串，并按Enter键
+		have a good day!                #系统在标准输出——显示器上，显示用户刚刚输入的字符串
+	 2）	cat > file1.txt    #输出重定向，将输出定向到文件file1.txt
+		have a good day!               #用户使用标准输入设备——键盘，键入字符串，并按Enter键
+                                              #用户输入的字符串被保存在file1.txt文件中
+	 3）    cat < file1.txt    #输入重定向，将cat命令的输入指定为file1.txt文件
+		have a good day!                #系统在标准输出显示器上，显示cat命令从文件中读出的字符串
+
+
+【2】命令置换
+    （1）命令替换是将一个命令的输出作为另一个命令的参数。命令格式如下所示。
+	 1）其中，命令command2的输出将作为命令command1的参数。需要注意，命令置换的单引号为ESC键下方的“`”键 
+				command1  `command2`
+	 2）pwd命令用于显示当前目录的绝对路径。在上面的命令行中，使用命令置换符，将pwd的运行结果作为ls命令的参数。最终，命令执行结果是显示当前目录的文件内容。
+				linux@ubuntu:~$ ls  `pwd`
+				Desktop  Examples  historycommandlist  mywork
+
+【3】总结与思考
+    （1）本节课首先介绍了shell中的输入输出重定向的用法，然后介绍了命令置换的使用
+    （2）思考：
+		什么叫输入输出重定向?
+		有哪些输入输出重定向符？
+
+
