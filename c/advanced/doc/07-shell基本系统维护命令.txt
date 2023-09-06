@@ -1,0 +1,107 @@
+【1】man、passwd、su、echo命令的用法
+    （1）获取联机帮助 
+	 1）使用man命令可以找到特定的联机帮助页，并提供简短的命令说明。一般语法格式为：
+		man  commandname
+	 2）联机帮助页提供了指定命令commandname的相关信息，包括：名称、函数、语法以及可选参数描述等。
+	    无论帮助有多长，都遵循这个格式显示。在页面很多的情况下使用PageUp和PageDown键翻页。最后，使用“：q”退出帮助页面。
+    （2）通常联机帮助信息包括以下几个部分：
+	 1）NAME：命令的名称
+	 2）SYNOPSIS：命令的语法格式
+	 3) DESCRIPTION：命令的一般描述以及用途
+	 4) OPTIONS：描述命令所有的参数或选项
+	 5) SEE ALSO：列出联机帮助页中与该命令直接相关或功能相近的其他命令
+	 6) BUGS：解释命令或其输出中存在的任何已知的问题或缺陷
+	 7) EXAMPLES：普通的用法示例
+	 8) AUTHORS：联机帮助页以及命令的作者
+
+     (3) man 3 printf    查库函数
+	 man 2 open      查系统调用
+	 man -a open     会将系统中与open相关的都列出来
+     (4) 基本系统维护命令
+	 1) passwd
+	 	a. 出于系统安全考虑，Linux系统中的每一个帐号都必须同时具备用户名和密码。
+		b. 可以使用passwd命令，为已有账户重新修改用户口令。
+		c. 需要说明的是，超级用户root可以修改所有其他用户的口令，而普通用户只能修改自己的用户口令，
+		   如果确要修改超级用户或其他用户口令的话，需要具有超级用户的权限。
+	 	d. passwd命令的一般语法格式为：
+			passwd  username
+	 2) 单独使用passwd命令，意为修改当前用户自己的口令。下面命令实例用于修改用户自己的口令。
+		linux@ubuntu:~$ passwd
+		Changing password for linux      #修改当前用户口令
+		(current) UNIX password:        #用户输入旧口令
+		Enter new UNIX password:       #用户输入新口令
+		Retype new UNIX password:      #确认新口令
+		passwd：已成功更新密码
+ 	 3)su
+	      a. su命令用于临时改变用户身份，具有其他用户的权限。普通用户可以使用su命令临时具有超级用户的权限；
+		超级用户也可以使用普通用户身份完成一些操作。当需要放弃当前用户身份，可以使用exit命令切换回来。su命令的一般语法格式为：
+				su  [-c | -m - ]  username
+ 	      b.选项“-c”表示执行一个命令后就结束；-m表示仍保留环境变量不变；-表示转换用户身份时，同时使用该用户的环境。
+	   单独使用su命令，默认为要转换为超级用户root。下面命令实例临时获取超级用户root的权限。
+	   可以从命令提示符中可以看出，“linux”用户使用su命令切换为root用户。
+			linux@ubuntu:~$ su
+			Password:     #当前用户输入超级用户的口令
+			root@ubuntu:/home/linux#
+         4) echo
+	      a.echo命令用于在标准输出——显示器上显示一段文字，一般起到提示作用。
+		echo命令的一般语法格式为：
+			echo  [-n]  information
+	      b.选项-n表示输出文字后不换行。提示信息字符串可以加引号，也可以不加。
+			linux@ubuntu:~$ echo   "Hello     everyone."    #输入信息字符串使用引号
+			Hello     everyone.
+			linux@ubuntu:~$ echo   ‘$PATH’    #严格的原样输出
+			$PATH.
+			linux@ubuntu:~$ echo    Hello     everyone.         #输入信息字符串不使用引号,字符串之间用一个空格隔开
+			Hello everyone.
+
+【2】date、clear、df、du命令的用法
+     (1) date
+	a. date命令用于显示和设置系统日期和时间。date命令的一般语法格式为：
+		date  [-d | -s|-u ]  datestr
+	b. 选项-s表示按照datestr日期显示格式设置日期；单独使用date命令，用于显示系统时钟中当前日期。
+	    时间的格式为：“hh：mm：ss”，日期格式为：“mm/dd/yy”。
+			linux@ubuntu:~$ date            #查看当前时间
+			2007年 09月 16日 星期日 18:44:45 CST
+			linux@ubuntu:~$ sudo  date  -s  1:19:18   #设置新时间，需要系统管理员权限
+			Password:
+			2007年 09月 16日 星期日 01:19:18 CST
+     (2) clear
+	a. clear命令用于清除屏幕上的信息。清屏后，sell命令提示符移动到屏幕左上角。
+	    clear命令的一般语法格式为：
+			clear
+        b.由于shell命令是逐行执行，执行结果也将随即显示。因此，用户在使用命令终端窗口时，终端窗口会很快就会被字符占满。
+	  clear可以帮助清理一下窗口中杂乱的字符显示。
+     (3) df
+	 a. df命令用于查看磁盘空间的使用情况。查看磁盘空间是用户应当经常做的事情，
+	     因为谁也不希望看到根或/var分区在不经意间填满，以便及时清理。df命令的一般格式为：
+			df  [-a | -T | -h | -k ]  Filesystem
+	 其中，参数Filesystem表示物理文件系统。各选项的含义如表所示。
+		选项          			含义
+		-a       显示所有物理文件系统的使用情况，包括虚拟文件系统，如/proc、/sys等
+		-T	     显示物理文件系统的文件格式类型
+		-h	     物理文件系统大小按兆字节为单位显示
+		-k	     物理文件系统大小按千字节为单位显示
+	 b. 从以下命令的执行结果可以看到，这台计算机只有一块硬盘（/dev/sda1），文件格式类型为Ext3，已经使用36%的存储空间。
+	    同时，可以发现计算机上还安装了CD-ROM（/dev/hdc）、USB存储器（/dev/sdb1）。其他分区均为专用的虚拟文件系统
+
+		linux@ubuntu:~$ df –T
+		文件系统    1K-块    已用        可用    已用%    挂载点
+		/dev/sda1    ext3     7850996  2664868   4787316   36%    /
+	 c. df 命令
+		常用参数：
+			 -a ：列出所有文件系统
+ 			 -k ：列出磁盘的分配情况（KB）
+ 			 -h ：同-k， 但大小以G、M，K单位显示
+ 			 -l ：仅列出本地文件系统	
+    		例： 
+			#df  -h
+	    du命令，列出目录和文件所使用的磁盘块数，每块占512个字节。
+ 		常用参数：
+			 -a ：仅列出空闲的文件数 
+ 			 -h ：列出磁盘的使用情况（KB） 
+ 			 -s ：列出总的空闲空间（KB） 
+   		例：
+			#du –h /etc
+
+【3】总结与思考
+	本节课主要介绍了linux的基本系统维护命令，包括man、passwd 、 su 、 echo、date、clear、df、du等

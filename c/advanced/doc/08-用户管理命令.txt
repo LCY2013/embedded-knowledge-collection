@@ -1,0 +1,97 @@
+【1】用户管理相关文件介绍
+    （1）用户管理
+	 用户的属性
+		1）用户名
+		2）口令
+		3）用户ID（UID）
+		4）用户主目录（HOME）
+		5）用户shell
+    （2）/etc/passwd文件
+	 /etc/passwd文件是系统能够识别的用户清单。用户登陆时，系统查询这个文件，确定用户的UID并验证用户口令
+		1）登陆名
+		2）经过加密的口令
+		3）UID
+		4）默认的GID
+		5）个人信息
+		6）主目录
+		7）登陆shell
+    （3）/etc/group文件
+	 1）包含了UNIX组的名称和每个组中成员列表
+	 2）每一行代表一个组，包括4个字段：
+		组名
+		加密的口令
+		GID号
+		成员列表，彼此用逗号隔开
+    （4）添加用户
+		adduser
+		语法：adduser  <username>
+		实例： 
+			 # adduser  newuser
+       			 添加用户名为newuser的新用户
+    （5）adduser配置文件      
+	 /etc/adduser.conf 
+     	   	  FIRST_UID=1000
+              LAST_UID=29999
+              USERS_GID=100
+		  DHOME=/home
+		  DSHELL=/bin/bash
+		  SKEL=/etc/skel
+    （6）SKEL模板	
+	/etc/skel目录是被 /usr/sbin/useradd使用
+	把想要新用户拥有的配置文件从/etc/skel目录拷贝，常用的文件： 
+		.bash_profile
+		.bashrc
+		.bash_logout
+		 dircolors
+		.inputrc
+		.vimrc  
+		
+
+【2】用户管理相关命令介绍
+    （1）添加新用户的过程
+	 1) 系统
+		编辑passwd和shadow文件，定义用户帐号
+		设置一个初始口令
+		创建用户主目录，用chown和chmod命令改变主目录的属主和属性
+ 	 2) 为用户所进行的步骤
+		将默认的启动文件复制到用户主目录中
+		设置用户的邮件主目录并建立邮件别名
+     (2) 设置初始口令
+	 1) 使用passwd命令可以修改用户口令
+	 2) root用户可以修改任何用户的口令
+		语法：passwd  [-k] [-l] [u] [-f] [-d] [-S]  username
+		使用方法： 
+				passwd  username
+     (3) 修改用户属性
+	usermod
+	语法：usermod [-u uid [-o]] [-g group] [-G gropup,…]
+                           	[-d home [-m]] [-s shell] [-c comment]
+                        	[-l new_name] [-f inactive][-e expire]
+                         	[-p passwd] [-L|-U] name
+
+	举例用户oldname改名为newname，注意要同时更改家目录： 
+	usermod  –d  /home/newname  –m  –l  newname  oldname
+     (4) 删除用户
+	 deluser
+	 语法：   deluser  <username>
+	 使用方法： 
+			     deluser  --remove-home  user1			
+    	 删除用户user1的同时删除用户的工作目录 
+     (5) 添加用户组 
+	 addgroup
+	 语法：      addgroup  groupname
+
+	 使用方法： 
+		     addgroup  groupname
+     (6) 删除用户组 
+	 delgroup
+	 语法：     delgroup  groupname
+
+	 使用方法： 
+		    delgroup  groupname1
+
+【3】总结与思考
+    (1)本节课主要介绍了linux系统中用户管理相关的重要配置文件以及用户管理相关的命令。
+    (2)思考	
+		用户相关的文件有哪些？
+		简述添加用户的过程。

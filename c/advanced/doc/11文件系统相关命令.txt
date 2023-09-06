@@ -1,0 +1,150 @@
+【1】file、mkdir、rmdir、ln命令
+    （1）文件和目录相关的命令
+	 pwd ls cd touch cp mv rm cat head tail
+    （2）file命令
+	 1）  在Linux文件系统中，文件扩展名不总是被使用或被一致地使用。如果一个文件没有扩展名，或者文件与其扩展名不符时怎么办呢？
+	    file命令功能用于判定一个文件的类型。file命令一般语法格式为：
+			file  [ filename ]
+	 2） 其中filename是文件名。命令的输出将显示该文件是二进制文件、文本文件、目录文件、设备文件，还是Linux中其他类型的文件。
+		linux@ubuntu:~$ file  /usr/games/banner
+		banner: ELF 32-bit LSB executable, Intel 80386, version 1 (SYSV), for GNU/Linux 2.6.0, dynamically linked (uses shared libs), stripped
+		linux@ubuntu:~$ file  Textfile.txt
+		Textfile.txt: UTF-8 Unicode text
+    （3）mkdir命令
+         1）mkdir命令用于创建一个目录。mkdir命令一般语法格式为：
+			mkdir  [ -p ]   directory_name 
+         2）其中，directory_name为要创建的目录名，并且不能是已有的目录，通常不允许嵌套创建子目录。
+         3）使用选项“-p”表示可以嵌套创建子目录，即多层目录。
+	 4）需要说明的是，创建目录的用户在工作目录应具有写入权限。假设要创建下面这样结构的目录。
+			dir1
+			dir1/dir2
+			dir1/dir2/dir3
+	    当然可以使用三条mkdir命令依次创建各层目录。
+			linux@ubuntu:~$ mkdir  dir1
+			linux@ubuntu:~$ mkdir  dir1/dir2
+			linux@ubuntu:~$ mkdir  dir1/dir2/dir3
+	    不过使用“-p”选项会简单许多，一步达到目标。
+			linux@ubuntu:~$ mkdir  –p  dir1/dir2/dir3
+			linux@ubuntu:~$ ls  –R  dir1
+			dir1:
+			dir2
+			dir1/dir2:
+			dir3
+			dir1/dir2/dir3:
+	 5）rmdir命令用于删除一个目录。rmdir命令一般语法格式为：
+			rmdir  [ -p ]   directory_name 
+		其中，directory_name为要删除的一个或多个目录名。
+		使用选项“-p”表示可以递归删除子目录，即多层目录。
+		需要说明的是，删除的目录必须为空目录，并且必须具有对该目录有写入权限。
+		假设要删除下面这样结构的目录。
+			dir1
+			dir1/dir2
+			dir1/dir2/dir3
+		当然可以使用三条rmdir命令从里向外依次删除各层目录（保证删除的目录为空）
+			linux@ubuntu:~$ rmdir  dir1/dir2/dir3
+			linux@ubuntu:~$ rmdir  dir1/dir2
+			linux@ubuntu:~$ rmdir  dir1/
+		不过使用“-p”选项可以一步到位。
+		以上命令的执行效果与“rm  –r  dir1”执行效果相同，并且后者的效率更高，因为它不要求各层目录均为空。
+			linux@ubuntu:~$ rmdir  –p  dir1/dir2/dir3
+     （6）创建链接文件
+	  1） Linux中有两种类型的链接：
+	      a.  硬链接是利用Linux中为每个文件分配的物理编号——inode建立链接。
+	          因此，硬链接不能跨越文件系统。
+              b.  软链接（符号链接）是利用文件的路径名建立链接。
+		  通常建立软链接使用绝对路径而不是相对路径，以最大限度增加可移植性。
+	  2）  需要注意的是，如果是修改硬链接的目标文件名，链接依然有效；如果修改软链接的目标文件名，
+	     则链接将断开；对一个已存在的链接文件执行移动或删除操作，有可能导致链接的断开。
+	     假如删除目标文件后，重新创建一个同名文件，软链接将恢复，硬链接不再有效，因为文件的inode已经改变。
+     （7）ln命令
+	  1）命令可以用于创建文件的链接文件。ln命令一般语法格式为：
+		ln  [ -s ]   target  link_name 
+	  2）其中，选项“-s”表示为创建软链接。在缺省情况下，创建硬链接。参数target为目标文件，link_name为链接文件名。
+	     如果链接文件名已经存在但不是目录，将不做链接。目标文件可以是任何一个文件名，也可以是一个目录。
+		linux@ubuntu:~$ ln  -s  /proc/cpuinfo   mycpuinfo
+		linux@ubuntu:~$ ls  –l  mycpuinfo 
+		lrwxrwxrwx  1  wdl  wdl  13  2007-09-22 00:43  mycpuinfo -> /proc/cpuinfo
+	     以上命令为/proc/cpuinfo文件创建了一个软链接文件。使用“ls –l”命令可以查看到新创建的链接文件所指向的目标文件名。
+
+
+【2】文件的归档和压缩
+    （1）压缩文件 
+	   用户在进行数据备份时，需要把若干文件整合为一个文件以便保存。尽管整合为一个文件进行管理，但文件大小仍然没变。
+	 若需要网络传输文件时，就希望将其压缩成较小的文件，以节省在网络传输的时间。因此本节介绍文件的归档与压缩。
+    （2）
+	 归档文件是将一组文件或目录保存在一个文件中。
+	 压缩文件也是将一组文件或目录保存一个文件中，并按照某种存储格式保存在磁盘上，所占磁盘空间比其中所有文件总和要少。
+	    a. 归档文件仍是没有经过压缩的，它所使用的磁盘空间仍等于其所有文件的总和。因而，用户可以将归档文件再进行压缩，使其容量更小。
+            b. gzip是Linux中最流行的压缩工具，具有很好的移植性，可在很多不同架构的系统中使用。bzip2在性能上优于gzip，提供了最大限度的压缩比率。
+	       如果用户需要经常在Linux和微软Windows间交换文件，建议使用zip。 
+			压缩工具     解压工具    文件扩展名
+			gzip          gunzip       .gz
+			bzip2         bunzip2      .bz2
+			zip           unzip        .zip
+     (3) 目前，归档工具使用最广泛的tar命令，可以把很多文件（甚至磁带）合并到一个称为tarfile的文件中，通常文件扩展名为.tar。
+	 然后，再使用zip、gzip或bzip2等压缩工具进行压缩。
+     (4) shell归档和压缩工具
+	 使用shell归档和压缩工具可以更直接地完成文档的打包任务。由于该类shell命令是成对使用的，因此下面按对介绍相关命令。
+     (5) gzip与gunzip命令
+	 与zip明显区别在于只能压缩一个文件，无法将多个文件压缩为一个文件。gzip命令符号模式的一般语法格式为：
+	 其中，filename表示要压缩的文件名，gzip会自动在这个文件名后添加扩展名为.gz，作为压缩文件的文件名。
+		gzip  [ -l| -d | -num ]  filename
+	 选项             描述
+	  -l        查看压缩文件内的信息，包括文件数、大小、压缩比等参数，并不进行文件解压
+	  -d        将文件解压，功能与gunzip相同
+	  -num      指定压缩比率，num为1~9个等级
+
+	gunzip命令符号模式的一般语法格式为：
+		gunzip  [ -f ]  file.gz
+	其中，选项“-f”用于解压文件时，对覆盖同名文件不做提示。
+	在执行gzip命令后，它将删除旧的未压缩的文件并只保留已压缩的版本。以下命令以最大的压缩率对文件file_1进行压缩，生成file_1.gz文件。
+	使用“-l”选项可以查看压缩的相关信息。最后使用gunzip命令对文件进行了解压。与压缩时相反，file_1.gz文件会被删除，继之生成file_1。
+			linux@ubuntu:~$ gzip  -9  file_1
+			linux@ubuntu:~$ gzip  -l   file_1.gz	
+			compressed  uncompressed    ratio    uncompressed_name
+ 			  1200                  4896           76.0%       file_1
+			linux@ubuntu:~$ gunzip    file_1.gz
+     (6) tar命令
+	 tar命令主要用于将若干文件或目录合并为一个文件，以便备份和压缩。当然，之后出现tar程序的改进版本，可以实现在合并归档的同时进行压缩。
+         tar命令符号模式的一般语法格式为：
+			tar  [ -t | -x | -u | -c | -v | -f | -j | -z ]  tarfile  filelist
+	-t	显示归档文件的内容
+	-x	释放归档文件
+	-u	更新归档文件
+	-c	创建一个新的归档文件
+	-v	显示归档和释放的过程信息
+	-f	用户指定归档文件的文件名，否则使用默认名称
+	-j	由tar生成归档，然后由bzip2压缩
+	-z	由tar生成归档，然后由gzip压缩
+
+	 第一，将myExamples/目录下的所有文件全部归档,打包到一个文件中myExamples.tar；
+	 第二，将myExamples/目录下的所有文件全部归档，并使用bzip2压缩成一个文件myExamples.tar.bz；
+	 第三，将myExamples/目录下的所有文件全部归档，并使用gzip压缩成一个文件myExamples.tar.gz。
+
+	linux@ubuntu:~$ tar  –cf   myExamples.tar      myExamples
+	linux@ubuntu:~$ tar  -cjf   myExamples.tar.bz   myExamples
+	linux@ubuntu:~$ tar  -czf  myExamples.tar.gz    myExamples
+	linux@ubuntu:~$ ls   -lh   myExamples.tar* 
+	-rw-r--r-- 1  wdl  wdl  9.3M  2007-09-23 00:42  myExamples.tar
+	-rw-r--r-- 1  wdl  wdl  8.6M  2007-09-23 00:43  myExamples.tar.bz
+	-rw-r--r-- 1  wdl  wdl  8.5M  2007-09-23 00:44  myExamples.tar.gz
+
+	如果想查看一下归档文件中的详细内容，使用类似以下命令：
+		linux@ubuntu~$ tar  –tvf   myExamples.tar.gz
+	使用以下命令完成tar文件的释放。其中，“tar -xjf”和“tar –xzf”等效与先解压缩后释放tar文件。
+		linux@ubuntu:~$ tar  –xvf   myExamples.tar
+		linux@ubuntu:~$ tar  -xvjf   myExamples.tar.bz
+		linux@ubuntu:~$ tar  -xvzf  myExamples.tar.gz
+
+
+
+
+
+
+
+
+
+
+
+
+

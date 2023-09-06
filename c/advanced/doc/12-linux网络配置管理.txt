@@ -1,0 +1,109 @@
+【1】网络配置基础
+    （1）用户既可以通过命令行的方式，也可以通过友好的图形界面，轻松完成网络配置。
+    （2）实现Linux网络配置的惟一目标就是修改系统中众多的网络配置文件，
+	 如/etc/interfaces、/etc/hosts，/etc/resolv.conf 等等。
+    （3）通常，用户可能使用普通以太网卡、无线网卡、调制解调器等不同类型的设备接入网络。
+	 不同类型的网络设备在主机中被映射为相应的网络接口，比如以太网卡映射为eth，无线网卡映射为wlan。
+	 有时，用户还可能同时使用多个网络设备，就会出现eth0、eth1…，或wlan0、wlan1…的情况。
+	 那么，如何标识每个连接到Internet的网络接口呢？
+	 解决办法是：为每个网络接口分配一个全世界范围内惟一的32bit的标识符。这个标识符就是IP（Internet Protocol）地址。 
+
+
+【2】配置IP地址
+    （1）IP地址
+	 IP地址包括三部分：Internet网络号（Net-ID）、子网号（Subnet-ID）和主机号（Host-ID）。
+	 三级IP地址		net-id		subnet-id	host-id
+	 子网掩码	1111,1111,1111,1111	1111,1111	0000,0000
+    （2）因而可以这样解释：一个IP地址惟一标识了，处在某个互联网中的，某个子网的，某个网络接口。
+    （3）根据Internet网络号的字段长度（1，2，3字节长），IP地址区分为A类、B类、C类。三类IP地址的掩码如下所示。
+	 1) A类地址的默认子网掩码是255.0.0.0，或0xFF000000；
+	 2) B类地址的默认子网掩码是255.255.0.0，或0xFFFF0000；
+	 3) C类地址的默认子网掩码是255.255.255.0，或0xFFFFFF00；
+     (4) IP网络中通常用最小的IP地址标识网络本身，将最大的IP地址作为该网络的广播地址，其余所有IP地址都分配给网络中的主机。
+	 然而，局域网中的主机并不能直接访问Internet，需要通过一个作为代理的网关或网络地址转换服务（NAT）才能访问Internet。
+	 通常将IP地址的第一个或最后一个留给该网络的Internet网关。
+     (5) 配置IP地址 
+	 接入网络的计算机主机依靠IP地址，惟一地标识其在网络中的身份，因此为主机配置IP地址是接入网络的关键。
+	 配置IP地址的方法有两种：
+		1) 配置静态IP：在主机进入网络之前，事先为主机设置固定的IP地址；
+		2) 配置动态IP：选择DHCP网络服务，在主机进入网络之后，动态随机获取IP地址。
+
+【3】网络相关命令
+     (1) Ifconfig命令
+	ifconfig是GNU/Linux中配置网卡的基本命令，包含在net-tools软件包中。它可用于显示或设置网卡的配置，
+	如IP地址、子网掩码、最大分组传输数、IO端口等，还可以启动或禁用网卡。
+	ifconfig命令有以下两种格式：
+		ifconfig  [interface]
+		ifconfig  interface [aftype] option | address…
+	ifconfig的第一种格式用于查看当前系统的网络配置情况；
+	          第二种格式用于配置网卡，包括添加、删除网卡，以及绑定多个IP地址等。
+	1) 如果主机安装了第二块、第三块网卡，则有eth1，eth2标识。常见的接口类型还有以下几种（N表示接口号）：
+	2) pppN表示调制解调设备
+	3) wlanN表示无线网卡
+ 	4) trN表示令牌环网卡
+	5) 如果只是关心某个网络设备，可以在ifconfig后面加上接口名称，则只显示该设备的相关信息，例如：
+		linux@ubuntu:~$ ifconfig   eth1
+	6) 假设主机现有的IP地址为192.168.182.129，需要为其重新分配IP地址192.168.182.128，即。使用ipconfig命令设置主机的第一块网卡（eth0）的IP地址。
+     (2) 配置动态IP地址 
+	 1) 在大型网络中，由于存在许多的移动计算机系统，随时都可能进入网络，在每次更换网络时，就不得不重新配置网络信息。
+	 如果计算机在网络里能够自动获取IP地址、子网掩码、路由表、DNS服务器地址等网络信息，具有动态配置IP的能力，就可以大大简化客户端的网络配置难度。
+	 动态主机配置协议（DHCP，Dynamic Host Configuration Protocol）可以实现动态分配IP资源。
+	 2) 只要在局域网中架设有DHCP服务器，在Ubuntu Linux中为主机配置DHCP客户端是非常容易的。需要说明的是，通常普通以太网卡和无线网卡可以配置动态IP，
+	    而调制解调器等网络设备不能配置动态IP。 
+		linux@ubuntu:~$ dhclient
+	 3) 动态IP的获取过程
+	    	可比作一个“租赁”过程。DHCP服务器好比是IP地址的出租方，用户主机（即DHCP客户端）好比是IP地址的临时租用者。  
+	    如果将用户主机设置为DHCP客户端之后，手动启动网络服务，就可以从执行结果中看出获取动态IP的过程。
+	    执行过程中包括以下四个阶段。
+		a. 客户端寻找DHCP服务器（DHCPDISCOVER）：客户端广播申请动态IP的请求；
+		b. 服务器提供可分配的IP地址（DHCPOFFER）：所有接收到请求的DHCP服务器都将向客户端提供一个IP地址；
+		c. 客户端接受IP地址租借（DHCPREQUEST）：客户端从多个IP选择中挑选一个，通知DHCP服务器，并标识出所选中的服务器；
+		d. 服务器确认租借IP（DHCPACK）：被选中的DHCP服务器最后发出一个确认信息，包含IP地址、子网掩码、默认网关、DNS服务器和租借期（客户端使用这个IP的这段时间，称为租借期）。
+		最终客户端临时“租借”的IP地址为192.168.182.129。
+     (3) IP地址存放在哪里——interfaces配置文件 
+ 	 无论是配置静态IP还是动态IP，计算机系统将IP信息保存放在什么地方？答案是配置文件“/etc/network/interfaces”。
+	 在Ubuntu Linux启动时就能获得IP地址的配置信息。若是配置静态IP，就从配置文件中读取IP地址参数，直接配置网络接口设备；
+	 若是配置动态IP，就通知主机通过DHCP协议获取网络配置。
+	 以下分别为配置静态IP和动态IP时，配置文件“/etc/network/interfaces”的实例。
+     (4) DNS客户端配置文件—resolv.conf
+ 	 1) Ubuntu Linux将DNS服务器地址保存在配置文件/etc/resolv.conf中。
+	 2) 依然延续上面的例子，添加DNS服务器IP地址后，查看配置文件/etc/hosts，如下所示。
+			linux@ubuntu:~$ cat   /etc/resolv.conf
+			nameserver  172.16.28.1
+			nameserver  202.204.58.2
+			nameserver  192.168.182.2
+     (5) ping命令
+	1) ping（Packet Internet Groper）命令可能是最有名气的网络连接检测工具。
+	   它使用了Internet控制报文协议（ICMP）回送请求与回送应答报文，测试两个主机之间的连通性。该命令的一般格式如下所示。
+	2) ping命令测试的远程主机，既可用域名，也可用IP地址标识。
+			ping  [DomainName | IP-address]
+	3) 可以使用该命令来判断主机与远程主机是否可达，或之间的网络是否拥塞。min/avg/max/mdev是ping命令的完成测试后的统计结果，
+	   分别表示最小响应时间/平均响应时间/最大响应时间/响应时间方差。这些指标用于反应网络的联通程度。
+			linux@ubuntu:~$ ping  www.baidu.cn
+	4) ping命令执行时，会持续不断地向目的主机发送ICMP包。在得到对方的应答后，显示每次连接的统计数据，直到用Ctrl+C组合键中断执行。
+	   但是，目前很多主机通过设置防火墙，对ping命令不予应答。在这种情况下，ping命令由于不停地发送测试数据包，又得不到返回任何结果，而致使ping命令僵死。
+	   不过，使用-c参数设置发送测试数据包的次数，以便在有限时间内完成测试。
+			linux@ubuntu:~$ ping  -c 3   www.google.com
+			PING www-china.l.google.com (66.249.89.99) 56(84) bytes of data.
+			--- www-china.l.google.com ping statistics ---
+			3 packets transmitted, 0 received, 100% packet loss, time 2000ms
+     (6) 管理DNS服务器地址 
+	 1) DNS域名解析可以在更大范围的计算机网络、Internet，提供域名到IP地址的转换。
+	    网络中的每台计算机都是一个DNS客户端，向DNS服务器提交域名解析的请求；DNS服务器完成域名到IP地址的映射。
+ 	 2) 因此DNS客户端至少有一个DNS服务器地址，作为命名解析的开端。
+     (7) nslookup命令
+	 1) 使用nslookup命令可以查看当前系统所使用的DNS服务器的IP地址。
+		linux@ubuntu:~$ nslookup   www.google.com
+		Server:   192.168.182.2
+		Address:   192.168.182.2#53
+		Non-authoritative answer:
+		www.google.com canonical name = www.l.google.com.
+		www.l.google.com canonical name = www-china.l.google.com.
+		Name: www-china.l.google.com
+		Address: 66.249.89.99
+	 2) 服务器192.168.182.2完成了域名解析。Server表示提供服务的DNS服务器，Address中的#53表示TCP/UDP命名服务的端口号。
+	    若所有的DNS服务器都访问失败，则出现如下的执行结果。
+		linux@ubuntu:~$ nslookup   www.google.com
+		;;   connection timed out;   no servers could be reached
+
+	
