@@ -1,0 +1,102 @@
+【1】循环语句for的用法
+    （1）循环语句for
+	 1）当循环次数已知或确定时，使用for循环语句来多次执行一条或一组命令。 
+	    循环体由语句括号do和done来限定。格式为:                
+	 	for   变量名   in   单词表
+          	    do
+                	      命令表
+               	    done
+	 2）变量依次取单词表中的各个单词,  每取一次单词, 就执行一次循环体中的命令.  
+	    循环次数由单词表中的单词数确定. 命令表中的命令可以是一条, 也可以是由分号或换行符分开的多条。
+         3）如果单词表是命令行上的所有位置参数时, 可以在for语句中省略 “in  单词表” 部分。
+    （2）实例
+	 实例：程序prog5.sh拷贝当前目录下的所有文件到backup子目录下.  
+	 使用语法为:  ./prog5.sh    [filename] 
+
+	# The statement of for…do…done
+	if  [  !  -d  $HOME/backup  ]
+	then
+		mkdir  $HOME/backup
+	fi
+	flist=`ls`
+	for  file  in  $flist
+	do
+		if   [  $#  =  1  ]
+		then
+			if   [  $1  =  $file  ]
+			then
+				echo  "$file  found" ;  exit
+			fi
+		else
+			cp  $file  $HOME/backup
+			echo  "$file  copied"
+		fi
+	done
+	echo   ***Backup  Completed***
+
+
+【2】循环语句while的用法
+    （1）语法结构为：
+                  while    命令或表达式
+                        do
+                           命令表
+                        done
+	1）while语句首先测试其后的命令或表达式的值，如果为真，就执行一次循环体中的命令，
+	   然后再测试该命令或表达式的值，执行循环体，直到该命令或表达式为假时退出循环。
+	2）while语句的退出状态为命令表中被执行的最后一条命令的退出状态。
+   （2）实例
+	创建文件程序prog6,  批量生成空白文件，用法为:
+              		prog6   file   [number]  ./a.sh file  6
+	# The statement for  while
+	if [ $# = 2 ]
+	then
+			loop=$2        ------>根据命令行的第二个参数来确定循环的次数
+	else
+			loop=5
+	fi
+	i=1
+	while  [  $i  -lt   $loop  ]
+	do
+			> $1$i         ------> 建立以第一个参数指定的文件名前缀，
+					       例如以“file”开头, 变量i的值结尾的空文件名. 参见命令cmd  >  file
+			i=`expr  $i  +  1`
+	done
+
+
+【3】循环控制语句
+     (1) break 和 continue 
+  		break  n  则跳出n层;  
+		continue语句则马上转到最近一层循环语句的下一轮循环上,  
+	 	continue  n则转到最近n层循环语句的下一轮循环上.
+
+	实例.  程序prog7的用法为:
+       	   		prog7   整数   整数   整数 …
+	参数个数不确定, 范围为1~10个, 每个参数都是正整数。
+     (2) if  [  $#  =  0  ]
+	 then
+		echo  "Numeric  arguments  required"
+		exit
+	 fi
+	 if  [  $#  -gt   10  ]
+	 then
+		echo  "Only  ten  arguments  allowed"
+		exit
+	 fi
+	 for  number
+	 do
+		count=`expr  $number  %  2`
+		if  [  $count  -eq  1  ]
+		then
+			continue
+		else
+			output="$output   $number"
+		fi
+	 done
+	 echo  "Even  numbers:  $output "
+
+
+
+
+
+
+
