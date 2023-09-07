@@ -1,0 +1,85 @@
+【1】shell脚本的基础知识
+    （1）shell脚本的本质
+	 编译型语言
+	 解释型语言
+		shell脚本语言是解释型语言
+		shell脚本的本质
+			shell命令的有序集合
+    （2）shell 编程的基本过程
+	 基本过程分为三步:
+	 step1. 建立 shell 文件
+   	        包含任意多行操作系统命令或shell命令的文本文件;
+	 step2. 赋予shell文件执行权限
+ 	        用chmod命令修改权限;
+	 step3. 执行shell文件
+   	        直接在命令行上调用shell程序.
+    （3）实例
+	 step1: 建立shell文件 (可用任何建立文本文件的方法)
+  		   $ cat  prog1.sh
+  		     date
+	 Step2: 赋予执行权限:  (初始文本文件无执行权限)
+   		   $ chmod  740  prog1.sh
+	 Step3: 执行该shell程序
+  	           $ prog1.sh
+       		     prog1.sh: not found    
+     		     (shell在标准搜索路径中找不到prog1.sh)
+	 Step4: 指定路径或修改环境变量PATH后执行shell程序
+   		   $ ./prog1.sh  
+   		   2009年  12月  16日  星期二  14:52:57  CST
+
+【2】shell变量
+    （1）shell变量
+	 shell允许用户建立变量存储数据，但不支持数据类型（整型、字符、浮点型），
+	 将任何赋给变量的值都解释为一串字符
+						Variable=value
+	 a.   count=1
+	 b.   echo $count
+	 c.   DATE=`date`
+	 d.   echo $DATE
+     (2) Bourne Shell有如下四种变量：
+		1) 用户自定义变量 
+		2) 位置变量即命令行参数 
+ 	 	3) 预定义变量 
+		4) 环境变量
+     (3) 用户自定义变量
+	 1) 在shell编程中通常使用全大写变量，方便识别 
+		$ COUNT=1
+	 2) 变量的调用：在变量前加$ 
+		$ echo $HOME 
+	 3) Linux Shell/bash从右向左赋值
+		$Y=y
+		$ X=$Y
+		$ echo $X 
+		y	 
+	 4) 使用unset命令删除变量的赋值 
+		$ Z=hello 
+		$ echo $Z 
+		hello 
+		$ unset Z 
+		$ echo $Z 
+     (4) 位置变量
+	 $0   与键入的命令行一样，包含脚本文件名
+	 $1,$2,……$9  分别包含第一个到第九个命令行参数
+	 $#   包含命令行参数的个数
+	 $@   包含所有命令行参数：“$1,$2,……$9”
+	 $?   包含前一个命令的退出状态
+	 $*   包含所有命令行参数：“$1,$2,……$9”
+	 $$   包含正在执行进程的ID号
+     (5) 常用shell环境变量 
+	 HOME： /etc/passwd文件中列出的用户主目录 
+	 IFS：Internal Field Separator, 默认为空格，tab及换行符
+	 PATH ：shell搜索路径
+	 PS1，PS2：默认提示符($)及换行提示符(>) 
+	 TERM：终端类型，常用的有vt100,ansi,vt200,xterm等 
+
+
+
+
+
+
+
+
+
+
+
+
