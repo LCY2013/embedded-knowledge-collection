@@ -1,0 +1,52 @@
+【1】shell函数调用
+    （1）函数调用格式:
+	 方式1：
+	 	value_name=`function_name  [arg1 arg2 … ]`
+	 函数的所有标准输出都传递给了主程序的变量
+	 方式2：
+		function_name  [arg1  arg2  …  ]
+		echo   $？
+	获取函数的返回的状态
+     (2) 实例
+	check_user( )    {  #查找已登录的指定用户
+	 	 user=`who  |  grep  $1 | wc -l`
+        	if [ $user –eq 0 ]
+       	 	then
+               		return  0       #未找到指定用户
+        	else
+              	        return  1       #找到指定用户
+        	fi
+	}
+	while  true         # MAIN, Main, main:   program  begin  here
+	do
+		echo  "Input username: \c"
+		read   uname
+		check_user  $uname       # 调用函数, 并传递参数uname
+		if [ $? –eq  1 ]                 # $?为函数返回值
+		then	echo  "user  $uname  online"
+		else	echo  "user  $uname  offline"
+		fi
+	done
+
+
+【2】函数变量作用域 
+    (1)全局作用域：在脚本的其他任何地方都能够访问该变量。
+    (2)局部作用域：只能在声明变量的作用域内访问。
+    (3)声明局部变量的格式：
+			Local   variable_name =value
+
+    (4) 
+	Scope()
+	{	
+	Local lclvariable =1
+	Gblvariable = 2
+	echo “lclavariable in function = $ lclvariable ”
+	echo “Gblvariable in function = $ Gblvariable ”
+	}
+
+	Scope
+
+	echo “lclavariable in function = $ lclvariable ”
+	echo “Gblvariable in function = $ Gblvariable ”
+
+
