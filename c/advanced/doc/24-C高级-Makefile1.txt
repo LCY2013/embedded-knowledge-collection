@@ -1,0 +1,180 @@
+【1】Makefile
+    （1）Make简介
+	 1）工程管理器，顾名思义，是指管理较多的文件 
+	 2）Make工程管理器也就是个“自动编译管理器”，这里的“自动”是指它能够根据文件时间戳
+	    自动发现更新过的文件而减少编译的工作量，同时，它通过读入Makefile文件的内容来执行大量的编译工作 
+	 3）Make将只编译改动的代码文件，而不用完全编译。
+    （2）Makefile基本结构 
+	 Makefile是Make读入的唯一配置文件 
+	 1）由make工具创建的目标体（target），通常是目标文件或可执行文件
+	 2）要创建的目标体所依赖的文件（dependency_file）
+	 3）创建每个目标体时需要运行的命令（command）
+	 4）注意:命令行前面必须是一个”TAB键”,否则编译错误为:*** missing separator.  Stop.
+	 Makefile格式
+		target  :   dependency_files
+		<TAB>  command
+		例子
+		hello.o :  hello.c hello.h
+		    gcc  –c  hello.c  –o  hello.o
+    （3）Makefile变量 
+	 一个复杂一些的例子
+	sunq:kang.o yul.o
+	    gcc kang.o yul.o -o sunq
+	kang.o : kang.c kang.h 
+	    gcc –Wall –O -g –c kang.c -o kang.o
+	yul.o : yul.c 
+	    gcc - Wall –O -g –c yul.c -o yul.o
+	注释:
+		-Wall:表示允许发出gcc所有有用的报警信息.
+     		-c:只是编译不链接,生成目标文件”.o”
+     		-o file:表示把输出文件输出到file里
+	关于更多的用man工具
+    （4）创建和使用变量
+	1）创建变量的目的:
+	   用来代替一个文本字符串:
+    	   1.系列文件的名字  
+	   2. 传递给编译器的参数 
+	   3. 需要运行的程序 
+	   4. 需要查找源代码的目录 
+	   5. 你需要输出信息的目录  
+	   6. 你想做的其它事情。 	
+        2）变量定义的两种方式
+	      a. 递归展开方式VAR=var
+	      b. 简单方式 VAR：=var
+	
+		变量使用$(VAR)
+		用”$”则用”$$”来表示、
+		类似于编程语言中的宏 
+	3)刚才的例子
+	  OBJS = kang.o yul.o
+	  CC = gcc
+  	  CFLAGS = -Wall -O -g
+	  sunq : $(OBJS)
+	      $(CC) $(OBJS) -o sunq
+	  kang.o : kang.c kang.h
+	      $(CC) $(CFLAGS) -c kang.c -o kang.o
+	  yul.o : yul.c yul.h
+	      $(CC) $(CFLAGS) -c yul.c -o yul.o
+	4)递归展开方式VAR=var
+	  例子:
+	  	foo = $(bar) 
+		bar = $(ugh) 
+		ugh = Huh? 
+		$(foo)的值为?
+		echo $(foo)来进行查看
+	5)优点：
+  		 它可以向后引用变量
+ 	  缺点： 不能对该变量进行任何扩展，例如 
+	 	 CFLAGS = $(CFLAGS) -O 
+		 会造成死循环
+	6)简单方式 VAR：=var
+		m := mm 
+		x := $(m) 
+		y := $(x) bar 
+		x := later 
+		echo $(x) $(y) 
+  		看看打印什么信息?
+	 用这种方式定义的变量，会在变量的定义点，按照被引用的变量的当前值进行展开 
+	 这种定义变量的方式更适合在大的编程项目中使用，因为它更像我们一般的编程语言 
+	7）用?=定义变量 
+		dir := /foo/bar
+		FOO ?= bar
+		FOO是?
+   	    含义是，如果FOO没有被定义过，那么变量FOO的值就是“bar”，
+	    如果FOO先前被定义过，那么这条语将什么也不做，其等价于：
+  		ifeq ($(origin FOO), undefined)
+      		FOO = bar
+   		endif
+	8）为变量添加值 
+	   你可以通过+=为已定义的变量添加新的值 
+	   Main=hello.o hello-1.o
+	   Main+=hello-2.o
+	9）预定义变量
+		AR     库文件维护程序的名称，默认值为ar。AS汇编程序的名称，默认值为as。
+		CC     C编译器的名称，默认值为cc。CPP  C预编译器的名称，默认值为$(CC) –E。
+		CXX    C++编译器的名称，默认值为g++。
+		FC     FORTRAN编译器的名称，默认值为f77
+		RM     文件删除程序的名称，默认值为rm -f
+	10）例子:
+		Hello: main.c main.h 
+		<tab> $(CC) –o hello main.c
+		clean:
+		<tab> $(RM) hello
+	11) 预定义变量
+		ARFLAGS 	 库文件维护程序的选项，无默认值。
+		ASFLAGS 	 汇编程序的选项，无默认值。
+		CFLAGS  	 C编译器的选项，无默认值。
+		CPPFLAGS	 C预编译的选项，无默认值。
+		CXXFLAGS	 C++编译器的选项，无默认值。
+		FFLAGS		 FORTRAN编译器的选项，无默认值。
+	12) 刚才的例子
+		OBJS = kang.o yul.o
+		CC = gcc	
+		CFLAGS = -Wall -O -g
+		sunq : $(OBJS)
+		    $(CC) $(OBJS) -o sunq
+		kang.o : kang.c kang.h
+		    $(CC) $(CFLAGS) -c kang.c -o kang.o
+		yul.o : yul.c yul.h
+		    $(CC) $(CFLAGS) -c yul.c -o yul.o
+	13)自动变量
+		$*	  不包含扩展名的目标文件名称
+		$+	  所有的依赖文件，以空格分开，并以出现的先后为序，可能 包含重复的依赖文件
+		$<	   第一个依赖文件的名称
+		$?	   所有时间戳比目标文件晚的的依赖文件，并以空格分开
+		$@          目标文件的完整名称
+		$^	   所有不重复的目标依赖文件，以空格分开
+		$%          如果目标是归档成员，则该变量表示目标的归档成员名称
+	14) 刚才的例子：
+		OBJS = kang.o yul.o
+		CC = gcc
+		CFLAGS = -Wall -O -g
+		sunq : $(OBJS)
+		    $(CC) $^ -o $@
+		kang.o : kang.c kang.h 
+		    $(CC) $(CFLAGS) -c $< -o $@
+		yul.o : yul.c yul.h
+		    $(CC) $(CFLAGS) -c $< -o $@
+	15) 环境变量
+		1) make在启动时会自动读取系统当前已经定义了的环境变量，并且会创建与之具有相同名称和数值的变量
+		2) 如果用户在Makefile中定义了相同名称的变量，那么用户自定义变量将会覆盖同名的环境变量 
+	(5) Make使用
+	    直接运行make 
+		选项
+			-C dir读入指定目录下的Makefile
+			-f  file读入当前目录下的file文件作为Makefile
+			-i忽略所有的命令执行错误
+			-I dir指定被包含的Makefile所在目录
+			-n只打印要执行的命令，但不执行这些命令
+			-p显示make变量数据库和隐含规则	
+			-s在执行命令时不显示命令
+			-w如果make在执行过程中改变目录，打印当前目录名
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
