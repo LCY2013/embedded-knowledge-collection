@@ -49,7 +49,7 @@ int main(int argc, char *argv[])
             break;
     }
 
-    for (n = 8; n >= 0; n--) {
+    /*for (n = 8; n >= 0; n--) {
         if (buf.st_mode & (1 << n)) {
             switch (n % 3) {
                 case 2:
@@ -65,9 +65,9 @@ int main(int argc, char *argv[])
         } else {
             printf("-");
         }
-    }
+    }*/
 
-    /*printf("%c%c%c%c%c%c%c%c%c\n",
+    printf("%c%c%c%c%c%c%c%c%c",
             buf.st_mode & S_IRUSR ? 'r' : '-',
             buf.st_mode & S_IWUSR ? 'w' : '-',
             buf.st_mode & S_IXUSR ? 'x' : '-',
@@ -76,7 +76,7 @@ int main(int argc, char *argv[])
             buf.st_mode & S_IXGRP ? 'x' : '-',
             buf.st_mode & S_IROTH ? 'r' : '-',
             buf.st_mode & S_IWOTH ? 'w' : '-',
-            buf.st_mode & S_IXOTH ? 'x' : '-');*/
+            buf.st_mode & S_IXOTH ? 'x' : '-');
 
     printf(" %lld", buf.st_size);
     tp = localtime(&buf.st_mtime);
