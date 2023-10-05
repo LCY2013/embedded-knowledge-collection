@@ -4,6 +4,8 @@
 
 /*
  * 进程结束 - exit/_exit
+ * int exit(int status);
+ * int _exit(int status);
  * 1. 进程结束后，操作系统回收进程占用的资源
  * 2. 进程结束后，进程的PCB被销毁
  * 3. 进程结束后，进程的父进程会收到SIGCHLD信号
