@@ -1,4 +1,13 @@
-## linux process 命令
+# linux process
+- [process概念](#process概念)
+- [process命令](#linux进程命令)
+
+## process概念
+- 进程有独立的地址空间，进程间的数据不共享。
+- Linux为每个进程创建task_struct结构体，用于存储进程信息。
+- 每个进程都参与内核调度，进程的调度是以时间片为单位的，互不影响。
+
+## linux进程命令
 - [ps](#ps)
 - [top](#top)
 - [nice](#nice)
