@@ -97,7 +97,105 @@ kill -9 -1 # 向当前用户的所有进程发送SIGKILL信号
 killall [-u user | prog] [-signal]
 killall a.out
 killall -u username
+```
 
+信号发送 kill/raise
+```c
+#include <signal.h>
+#include <unistd.h>
+
+int kill(pid_t pid, int sig);
+int raise(int sig);
+```
+- 成功返回0，失败返回-1
+- kill函数用于向指定进程发送信号，pid参数指定进程号(0代表同组进程，-1代表所有进程)，sig参数指定信号
+- raise函数用于向当前进程发送信号，sig参数指定信号
+
+信号相关函数 alarm/pause
+```c
+#include <unistd.h>
+
+unsigned int alarm(unsigned int seconds);
+int pause(void);
+```
+- 成功返回上一个定时器的剩余时间，失败返回-1
+- alarm函数用于设置闹钟，seconds参数指定闹钟时间，如果seconds参数为0，表示取消闹钟
+- alarm函数只能设置一个闹钟，如果设置多个闹钟，只有最后一个闹钟生效，时间到达后，内核会向进程发送SIGALRM信号
+- pause函数用于挂起进程，直到收到信号，如果收到信号，pause函数返回-1，errno设置为EINTR
+
+信号函数alarm/pause示例
+```c
+#include <stdio.h>
+#include <unistd.h>
+#include <signal.h>
+#include <stdlib.h>
+
+void sig_handler(int sig)
+{
+    printf("receive signal: %d\n", sig);
+}
+
+int main(int argc, char *argv[])
+{
+    // 缺省情况下，alarm函数会打印Alarm clock, 然后退出进程, 但是如果设置了定时器处理函数，就不会打印Alarm clock
+    // 自定义定时器处理函数
+    //signal(SIGALRM, sig_handler);
+    
+    alarm(5);
+    pause();
+    printf("pause return\n");
+    return 0;
+}
+```
+
+设置信号处理/响应函数 signal
+```c
+#include <unistd.h>
+#include <signal.h>
+
+typedef void (*sighandler_t)(int);
+
+void (*signal(int signum, void (*handler)(int)))(int);
+```
+- 成功返回上一个信号处理函数，失败返回SIG_ERR
+- signum参数指定信号，handler参数指定信号处理函数，如果handler参数为SIG_IGN，表示忽略信号，如果handler参数为SIG_DFL，表示执行默认动作
+
+信号处理/响应函数 signal 示例
+```c
+#include <stdio.h>
+#include <unistd.h>
+#include <signal.h>
+#include <stdlib.h>
+
+void sig_handler(int sig)
+{
+   if (sig == SIGINT) {
+       printf("receive SIGINT signal: %d\n", sig);
+       exit(0);
+   } else if (sig == SIGQUIT) {
+       printf("receive SIGQUIT signal: %d\n", sig);
+       exit(0);
+   } else if (sig == SIGTSTP) {
+       printf("receive SIGTSTP signal: %d\n", sig);
+       exit(0);
+   } 
+    
+}
+
+int main(int argc, char *argv[])
+{
+    // 设置信号处理函数
+    signal(SIGINT, sig_handler);
+    signal(SIGQUIT, sig_handler);
+    signal(SIGTSTP, sig_handler);
+    while (1) {
+        /*printf("hello world\n");
+        sleep(1);*/
+        printf("pause\n");
+        pause();
+    }
+    return 0;
+}
 ```
 
 ## System V IPC
