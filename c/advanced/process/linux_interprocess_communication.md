@@ -198,13 +198,133 @@ int main(int argc, char *argv[])
 }
 ```
 
-## System V IPC
+## 4. System V IPC
+- IPC对象包含：共享内存、信号灯集、消息队列
+- IPC对象的创建和使用都需要通过IPC键值(唯一的ID)来标识，IPC键值是一个整数，可以通过ftok函数生成
+- IPC对象创建后一直存在，直到系统重启或者显示删除，IPC对象的删除需要使用IPC_RMID命令，IPC对象的删除不会影响正在使用该IPC对象的进程，只有当所有进程都不再使用该IPC对象时，IPC对象才会被删除
+- 每个IPC对象有一个关联的KEY
+- ipcs命令用于查看IPC对象，ipcrm命令用于删除IPC对象
 
-## 4. 消息队列(Message Queue)
+System V IPC对象的创建：
+```c
+#include <sys/types.h>
+#include <sys/ipc.h>
+
+key_t ftok(const char *pathname, int proj_id);
+```
+- 成功返回IPC键值(KEY)，失败返回EOF
+- pathname参数指定文件名，proj_id参数指定项目ID用于生成KEY且不能为0，如果pathname参数指定的文件不存在，会创建一个文件，然后返回IPC键值，如果pathname参数指定的文件存在，会返回IPC键值，如果pathname参数指定的文件不可访问，会返回EOF
+
+System V IPC ftok 示例：
+```c
+#include <stdio.h>
+#include <sys/types.h>
+#include <sys/ipc.h>
+#include <stdlib.h>
+#include <unistd.h>
+
+// ./a.out .
+int main(int argc, char *argv[])
+{
+    key_t key;
+    if (argc != 2) {
+        printf("usage: %s <pathname>\n", argv[0]);
+        exit(1);
+    }
+    if ((key = ftok(argv[1], 'a')) < 0) {
+        perror("ftok error");
+        exit(1);
+    }
+    printf("key: %d\n", key);
+    return 0;
+}
+```
 
 ## 5. 共享内存(Shared Memory)
+- 共享内存是最快/最高效的IPC方式，因为共享内存是直接映射到进程的虚拟地址空间，不需要数据的拷贝
+- 共享内存是一块在内核空间创建的内核缓冲区，多个进程可以将其映射到自己的虚拟地址空间，从而实现共享
+- 由于多个进程可同时访问共享内存，所以需要同步和互斥机制配合使用，如：信号量
 
-## 6. 信号量集(Semaphore set)
+共享内存的使用步骤
+- 创建/打开共享内存
+- 映射共享内存，即把指定的共享内存映射到进程的虚拟地址空间用于访问
+- 读写共享内存
+- 解除映射共享内存
+- 删除共享内存
+
+共享内存创建 - shmget
+```c
+#include <sys/types.h>
+#include <sys/ipc.h>
+#include <sys/shm.h>
+
+int shmget(key_t key, size_t size, int shmflg);
+```
+- 成功返回共享内存ID，失败返回EOF
+- key参数指定共享内存的KEY(IPC_PRIVATE或ftok生成)，size参数指定共享内存的大小，shmflg参数指定共享内存标志位，如：IPC_CREAT|0666
+
+共享内存创建 - shmget 示例1
+```c
+#include <stdio.h>
+#include <sys/types.h>
+#include <sys/ipc.h>
+#include <sys/shm.h>
+#include <stdlib.h>
+#include <unistd.h>
+
+// 创建一个私有的共享内存，大小为512字节，权限为0666
+// ./a.out
+int main(int argc, char *argv[])
+{
+    int shmid;
+    // 指定为私有的共享内存，大小为512字节，权限为0666(私有的共享内存只需指定0666即可)
+    if ((shmid = shmget(IPC_PRIVATE, 512, 0666)) < 0) {
+        perror("shmget error");
+        exit(1);
+    }
+    printf("shmid: %d\n", shmid);
+    return 0;
+}
+```
+
+共享内存创建 - shmget 示例2
+```c
+#include <stdio.h>
+#include <sys/types.h>
+#include <sys/ipc.h>
+#include <sys/shm.h>
+#include <stdlib.h>
+#include <unistd.h>
+
+// 创建/打开一个和key关联的共享内存，大小为1024字节，权限为0666
+// ./a.out .
+int main(int argc, char *argv[])
+{
+    int shmid;
+    key_t key;
+    if (argc != 2) {
+        printf("usage: %s <pathname>\n", argv[0]);
+        exit(1);
+    }
+    
+    // 指定相同的参数才能得到相同的key
+    if ((key = ftok(argv[1], 'a')) < 0) {
+        perror("ftok error");
+        exit(1);
+    }
+    // 指定为共享的共享内存，大小为1024字节，权限为0666
+    if ((shmid = shmget(key, 1024, IPC_CREAT|0666)) < 0) {
+        perror("shmget error");
+        exit(1);
+    }
+    printf("shmid: %d\n", shmid);
+    return 0;
+}
+```
+
+## 6. 消息队列(Message Queue)
+
+## 7. 信号量集(Semaphore set)
 
 ## POSIX IPC
 
