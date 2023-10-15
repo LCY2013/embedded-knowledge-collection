@@ -5,3 +5,14 @@ int N = 64;
 
 // 消息队列名称
 char MSG_NAME = 'q';
+
+// mq消息结构
+typedef struct {
+    long mtype;
+    char mtext[64];
+} MSG;
+
+#define LEN (sizeof(MSG) - sizeof(long))
+
+#define C1_TYPE 100
+#define C2_TYPE 200

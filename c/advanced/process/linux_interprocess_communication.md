@@ -203,7 +203,7 @@ int main(int argc, char *argv[])
 - IPC对象的创建和使用都需要通过IPC键值(唯一的ID)来标识，IPC键值是一个整数，可以通过ftok函数生成
 - IPC对象创建后一直存在，直到系统重启或者显示删除，IPC对象的删除需要使用IPC_RMID命令，IPC对象的删除不会影响正在使用该IPC对象的进程，只有当所有进程都不再使用该IPC对象时，IPC对象才会被删除
 - 每个IPC对象有一个关联的KEY
-- ipcs命令用于查看IPC对象，ipcrm命令用于删除IPC对象
+- ipcs命令用于查看IPC对象(ipcs -q/-m/-s)，ipcrm命令用于删除IPC对象(ipcrm -q/-m/-s IPC键值)
 
 System V IPC对象的创建：
 ```c
@@ -466,7 +466,7 @@ int main(int argc, char *argv[])
     int msgid;
     key_t key;
     
-    if((key == ftok(".", 'q')) == -1) {
+    if((key = ftok(".", 'q')) == -1) {
         perror("ftok error");
         exit(1);
     }
@@ -527,7 +527,7 @@ int main(int argc, char *argv[])
     int msgid;
     key_t key;
     
-    if((key == ftok(".", 'q')) == -1) {
+    if((key = ftok(".", 'q')) == -1) {
         perror("ftok error");
         exit(1);
     }
@@ -560,6 +560,87 @@ int main(int argc, char *argv[])
     return 0;
 }
 ```
+
+### 消息队列接收消息 - msgrcv
+```c
+#include <sys/types.h>
+#include <sys/ipc.h>
+#include <sys/msg.h>
+#include <stdlib.h>
+
+ssize_t msgrcv(int msqid, void *msgp, size_t msgsz, long msgtyp, int msgflg);
+```
+- 成功返回消息的大小，失败返回EOF
+- msqid参数指定消息队列ID
+- msgp参数指定消息缓冲区的地址
+- msgsz参数指定消息的大小
+- msgtyp参数指定消息类型，如果msgtyp参数为0，表示接收消息队列中的第一条消息，如果msgtyp参数大于0，表示接收消息队列中消息类型为msgtyp的消息，如果msgtyp参数小于0，表示接收消息队列中消息类型小于等于msgtyp绝对值的消息 
+- msgflg参数指定消息队列标志位，如：IPC_NOWAIT(非阻塞)，0(阻塞)
+
+消息队列接收消息 - msgrcv 示例
+```c
+#include <stdio.h>
+#include <sys/types.h>
+#include <sys/ipc.h>
+#include <sys/msg.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <string.h>
+
+typedef struct {
+        long mtype;
+        char mtext[512];
+} MSG;
+
+#define LEN (sizeof(MSG) - sizeof(long))
+
+// 从消息队列中接收消息
+// ./a.out
+int main(int argc, char *argv[])
+{
+    int msgid;
+    key_t key;
+    MSG msg;
+    
+    if((key = ftok(".", 'q')) == -1) {
+        perror("ftok error");
+        exit(1);
+    }
+    
+    // 指定消息队列，权限为IPC_CREAT|0666
+    if ((msgid = msgget(key, IPC_CREAT|0666)) < 0) {
+        perror("msgget error");
+        exit(1);
+    }
+    printf("msgid: %d\n", msgid);
+    
+    // 接收消息
+    while (1) {
+        //if (msgrcv(msgid, &msg, 512, 1, 0) < 0) {
+        if (msgrcv(msgid, &msg, LEN, 1, 0) < 0) {
+            perror("msgrcv error");
+            exit(1);
+        }
+        printf("msg.mtype: %ld\n", msg.mtype);
+        printf("msg.mtext: %s\n", msg.mtext);
+    }
+    return 0;
+}
+```
+
+### 消息队列控制 - msgctl
+```c
+#include <sys/types.h>
+#include <sys/ipc.h>
+#include <sys/msg.h>
+
+int msgctl(int msqid, int cmd, struct msqid_ds *buf);
+```
+- 成功返回0，失败返回EOF
+- msqid参数指定消息队列ID
+- cmd参数指定控制命令，如：IPC_STAT(获取消息队列信息)、IPC_SET(设置消息队列信息)、IPC_RMID(删除消息队列)
+- buf参数指定消息队列信息结构体
+
 
 ## 7. 信号量集(Semaphore set)
 

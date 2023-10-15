@@ -13,7 +13,7 @@ int main(int argc, char *argv[])
     int msgid;
     key_t key;
 
-    if((key == ftok(".", MSG_NAME)) == -1) {
+    if((key = ftok(".", MSG_NAME)) == -1) {
         perror("ftok error");
         exit(1);
     }
