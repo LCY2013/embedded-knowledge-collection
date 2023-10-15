@@ -426,6 +426,140 @@ int shmctl(int shmid, int cmd, struct shmid_ds *buf);
   - nattach字段为0，当所有进程都解除映射共享内存后，共享内存会被删除
 
 ## 6. 消息队列(Message Queue)
+- 消息队列是System V IPC对象的一种
+- 消息队列由消息队列标识符(ID)来唯一标识，消息队列标识符是一个整数，可以通过ftok函数生成
+- 消息队列是一个消息链表，每个消息都有一个消息类型，消息类型是一个整数，消息类型必须大于0，消息类型越小，优先级越高
+- 消息队列是一个消息列表。用户可以在消息队列中添加消息，也可以从消息队列中读取消息，消息队列中的消息是按照消息类型从小到大排列的，消息类型相同的消息按照先进先出的顺序排列
+- 消息队列可以按照类型来发送/接收消息，也可以按照优先级来发送/接收消息
+
+### 消息队列使用步骤
+- 创建/打开消息队列 - msgget
+- 向消息队列发送消息 - msgsnd
+- 从消息队列接收消息 - msgrcv
+- 控制消息队列 - msgctl
+
+### 消息队列创建 - msgget
+```c
+#include <sys/types.h>
+#include <sys/ipc.h>
+#include <sys/msg.h>
+
+int msgget(key_t key, int msgflg);
+```
+- 成功返回消息队列ID，失败返回EOF
+- key参数指定消息队列的KEY(IPC_PRIVATE或ftok生成)
+- msgflg参数指定消息队列标志位，如：IPC_CREAT|0666
+
+消息队列创建/打开 - msgget 示例
+```c
+#include <stdio.h>
+#include <sys/types.h>
+#include <sys/ipc.h>
+#include <sys/msg.h>
+#include <stdlib.h>
+#include <unistd.h>
+
+// 创建一个消息队列，权限为0666
+// ./a.out
+int main(int argc, char *argv[])
+{
+    int msgid;
+    key_t key;
+    
+    if((key == ftok(".", 'q')) == -1) {
+        perror("ftok error");
+        exit(1);
+    }
+    
+    // 指定消息队列，权限为IPC_CREAT|0666
+    if ((msgid = msgget(key, IPC_CREAT|0666)) < 0) {
+        perror("msgget error");
+        exit(1);
+    }
+    printf("msgid: %d\n", msgid);
+    return 0;
+}
+```
+
+### 消息队列发送消息 - msgsnd
+```c
+#include <sys/types.h>
+#include <sys/ipc.h>
+#include <sys/msg.h>
+#include <stdlib.h>
+#include <unistd.h>
+
+int msgsnd(int msqid, const void *msgp, size_t msgsz, int msgflg);
+```
+- 成功返回0，失败返回EOF
+- msqid参数指定消息队列ID
+- msgp参数指定消息缓冲区的地址
+- msgsz参数指定消息的大小
+- msgflg参数指定消息队列标志位，如：IPC_NOWAIT(非阻塞)，0(阻塞)
+
+#### 消息格式
+- 通信双方首先要约定消息的格式，消息格式一般包含消息类型和消息内容
+- 用户根据应用需求定义结构体类型
+- 首成员类型为long，用于存储消息类型(正整数)，消息类型必须大于0，消息类型越小，优先级越高
+- 其他成员都属于消息正文
+
+消息队列发送消息 - msgsnd 示例
+```c
+#include <stdio.h>
+#include <sys/types.h>
+#include <sys/ipc.h>
+#include <sys/msg.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <string.h>
+
+typedef struct {
+        long mtype;
+        char mtext[512];
+} msg;
+
+#define LEN (sizeof(msg) - sizeof(long))
+
+// 向消息队列中发送消息
+// ./a.out
+int main(int argc, char *argv[])
+{
+    int msgid;
+    key_t key;
+    
+    if((key == ftok(".", 'q')) == -1) {
+        perror("ftok error");
+        exit(1);
+    }
+    
+    /*struct msgbuf {
+        long mtype;
+        char mtext[512];
+    } msg;*/
+    
+    // 指定消息队列，权限为IPC_CREAT|0666
+    if ((msgid = msgget(key, IPC_CREAT|0666)) < 0) {
+        perror("msgget error");
+        exit(1);
+    }
+    printf("msgid: %d\n", msgid);
+    
+    // 发送消息
+    msg.mtype = 1;
+    while (1) {
+        fgets(msg.mtext, 512, stdin);
+        if (strncmp(msg.mtext, "quit", 4) == 0) {
+            break;
+        }
+        //if (msgsnd(msgid, &msg, strlen(msg.mtext), 0) < 0) {
+        if (msgsnd(msgid, &msg, LEN, 0) < 0) {
+            perror("msgsnd error");
+            exit(1);
+        }
+    }
+    return 0;
+}
+```
 
 ## 7. 信号量集(Semaphore set)
 
