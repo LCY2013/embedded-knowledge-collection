@@ -53,6 +53,8 @@ int main(int argc, char *argv[])
         }
         printf("recv mtype: %ld, mtext: %s\n", msg.mtype, msg.mtext);
     }
+
+    // 删除消息队列
     msgctl(msgid, IPC_RMID, NULL);
     return 0;
 }

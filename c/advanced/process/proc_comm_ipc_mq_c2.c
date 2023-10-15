@@ -53,6 +53,7 @@ int main(int argc, char *argv[])
         msgsnd(msgid, &msg, LEN, 0);
     }
 
+    // 删除消息队列
     msgctl(msgid, IPC_RMID, NULL);
     return 0;
 }
