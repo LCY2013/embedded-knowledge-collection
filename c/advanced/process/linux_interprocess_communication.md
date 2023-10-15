@@ -252,7 +252,7 @@ int main(int argc, char *argv[])
 - 解除映射共享内存
 - 删除共享内存
 
-共享内存创建 - shmget
+### 共享内存创建 - shmget
 ```c
 #include <sys/types.h>
 #include <sys/ipc.h>
@@ -321,6 +321,109 @@ int main(int argc, char *argv[])
     return 0;
 }
 ```
+
+### 共享内存映射 - shmat
+```c
+#include <sys/types.h>
+#include <sys/shm.h>
+#include <sys/ipc.h>
+
+void *shmat(int shmid, const void *shmaddr, int shmflg);
+```
+- 成功返回共享内存的起始地址，失败返回(void *)-1
+- shmid参数指定共享内存ID，shmaddr参数指定映射的地址(NULL表示由系统自动映射)，shmflg参数指定共享内存标志位 0表示可读写，如：SHM_RDONLY
+
+共享内存读写 - 示例
+- 通过指针访问共享内存，指针类型取决于共享内存中存储的数据类型
+  - 如果共享内存中存储的是字符串，指针类型为(char *)
+  - 如果共享内存中存储的是整型，指针类型为(int *)
+  - 如果共享内存中存储的是结构体，指针类型为(struct xxx *)
+  - 如果共享内存中存储的是数组，指针类型为(char *)或(int *)或(struct xxx *)
+```c
+#include <stdio.h>
+#include <sys/types.h>
+#include <sys/ipc.h>
+#include <sys/shm.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <string.h>
+
+// 在共享内存中存放键盘输入的字符串
+// ./a.out
+int main(int argc, char *argv[])
+{
+    int shmid;
+    char *ptr;
+    // 指定为私有的共享内存，大小为512字节，权限为0666(私有的共享内存只需指定0666即可)
+    if ((shmid = shmget(IPC_PRIVATE, 512, 0666)) < 0) {
+        perror("shmget error");
+        exit(1);
+    }
+    printf("shmid: %d\n", shmid);
+    
+    // 映射共享内存
+    if ((ptr = shmat(shmid, NULL, 0)) == (void *)-1) {
+        perror("shmat error");
+        exit(1);
+    }
+    
+    // 读写共享内存
+    while (1) {
+        fgets(ptr, 512, stdin);
+        if (strncmp(ptr, "quit", 4) == 0) {
+            break;
+        }
+    }
+    
+    // 解除映射共享内存
+    if (shmdt(ptr) < 0) {
+        perror("shmdt error");
+        exit(1);
+    }
+    
+    // 删除共享内存
+    if (shmctl(shmid, IPC_RMID, NULL) < 0) {
+        perror("shmctl error");
+        exit(1);
+    }
+    return 0;
+}
+```
+
+### 共享内存撤销映射 - shmdt
+```c
+#include <sys/types.h>
+#include <sys/shm.h>
+#include <sys/ipc.h>
+
+int shmdt(const void *shmaddr);
+```
+- 成功返回0，失败返回EOF
+- shmaddr参数指定共享内存的起始地址
+- 解除映射共享内存后，进程不能再访问共享内存，但是共享内存仍然存在，只有当所有进程都解除映射共享内存后，共享内存才会被删除
+- 进程结束时，内核会自动解除映射共享内存
+
+### 共享内存控制 - shmctl
+```c
+#include <sys/types.h>
+#include <sys/shm.h>
+#include <sys/ipc.h>
+
+int shmctl(int shmid, int cmd, struct shmid_ds *buf);
+```
+- 成功返回0，失败返回EOF
+- shmid参数指定共享内存ID
+- cmd参数指定控制命令，如：IPC_STAT(获取共享内存信息)、IPC_SET(设置共享内存信息)、IPC_RMID(删除共享内存)
+- buf参数指定共享内存信息结构体
+
+共享内存 - 注意事项
+- 共享内存的大小必须是页大小的整数倍，页大小可以通过getpagesize函数获取
+- 每块共享内存大小有限制
+  - ipcs -l 命令可以查看系统的共享内存限制
+  - 可以通过cat /proc/sys/kernel/shmmax查看系统的共享内存限制，也可以通过echo 1024 > /proc/sys/kernel/shmmax修改系统的共享内存限制
+- 共享内存删除的时间点
+  - shmctl(shmid, IPC_RMID, NULL) 添加删除标记
+  - nattach字段为0，当所有进程都解除映射共享内存后，共享内存会被删除
 
 ## 6. 消息队列(Message Queue)
 
