@@ -16,3 +16,14 @@ typedef struct {
 
 #define C1_TYPE 100
 #define C2_TYPE 200
+
+// 信号灯集与共享内存示例定义
+int READ = 0;
+int WRITE = 1;
+
+//union semun {
+//    int val;
+//    struct semid_ds *buf;
+//    unsigned short *array;
+//    struct seminfo *__buf;
+//};

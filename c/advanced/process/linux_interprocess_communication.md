@@ -687,6 +687,30 @@ int semctl(int semid, int semnum, int cmd, ...);
 - cmd参数指定控制命令，如：IPC_STAT(获取信号灯集信息)、IPC_SET(设置信号灯集信息)、IPC_RMID(删除信号灯集)、SETVAL(设置信号灯集中的信号灯的值)、GETVAL(获取信号灯集中的信号灯的值)
 - ... 参数指定信号灯集信息结构体 union semun 取决于cmd参数
 
+### 信号灯P/V操作 - semop
+```c
+#include <sys/types.h>
+#include <sys/ipc.h>
+#include <sys/sem.h>
+
+int semop(int semid, struct sembuf *sops, size_t nsops);
+```
+- 成功返回0，失败返回EOF
+- semid参数指定信号灯集ID
+- sops参数指定信号灯操作结构体数组
+- nsops参数指定信号灯操作结构体数组的大小
+- ```c
+  struct sembuf {
+    short sem_num; // 信号灯编号
+    short sem_op; // 信号灯操作
+    short sem_flg; // 信号灯标志位
+  };
+  ```
+  - sem_num参数指定信号灯编号，如果sem_num参数为0，表示操作信号灯集中的所有信号灯
+  - sem_op参数指定信号灯操作，如果sem_op参数为正数，表示执行V操作，如果sem_op参数为负数，表示执行P操作，如果sem_op参数为0，表示执行Z操作
+  - sem_flg参数指定信号灯标志位，如：IPC_NOWAIT(非阻塞)，0(阻塞)
+
+
 ## POSIX IPC
 
 ## 7. 套接字(Socket)
