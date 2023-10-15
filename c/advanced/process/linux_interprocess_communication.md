@@ -643,6 +643,49 @@ int msgctl(int msqid, int cmd, struct msqid_ds *buf);
 
 
 ## 7. 信号量集(Semaphore set)
+- 信号量集是System V IPC对象的一种
+- 信号灯也叫信号量，信号量是一个计数器，用于实现进程/线程间的同步和互斥机制
+- 信号灯的类型
+  - Posix 无名信号量
+  - Posix 有名信号量
+  - System V 信号量集
+- 信号量的含义
+  - 计算信号量
+  - System V 信号量集是一个或者多个计数信号量的集合
+  - 可同时操作集合中的多个信号量
+
+System V信号灯使用步骤
+- 创建/打开信号灯 - semget
+- 初始化信号灯 - semctl
+- 操作P/V信号灯 - semop
+- 控制信号灯 - semctl
+
+### 信号灯创建 - semget
+```c
+#include <sys/types.h>
+#include <sys/ipc.h>
+#include <sys/sem.h>
+
+int semget(key_t key, int nsems, int semflg);
+```
+- 成功返回信号灯集ID，失败返回EOF
+- key参数指定信号灯集的KEY(IPC_PRIVATE或ftok生成)
+- nsems参数指定信号灯集中信号灯的个数
+- semflg参数指定信号灯集标志位，如：IPC_CREAT|0666 IPC_EXCL(与IPC_CREAT一起使用，表示信号灯集已经存在时，不创建，返回错误)
+
+### 信号灯初始化 - semctl
+```c
+#include <sys/types.h>
+#include <sys/ipc.h>
+#include <sys/sem.h>
+
+int semctl(int semid, int semnum, int cmd, ...);
+```
+- 成功返回0，失败返回EOF
+- semid参数指定信号灯集ID
+- semnum参数指定信号灯集中信号灯的编号，如果semnum参数为0，表示操作信号灯集中的所有信号灯
+- cmd参数指定控制命令，如：IPC_STAT(获取信号灯集信息)、IPC_SET(设置信号灯集信息)、IPC_RMID(删除信号灯集)、SETVAL(设置信号灯集中的信号灯的值)、GETVAL(获取信号灯集中的信号灯的值)
+- ... 参数指定信号灯集信息结构体 union semun 取决于cmd参数
 
 ## POSIX IPC
 
